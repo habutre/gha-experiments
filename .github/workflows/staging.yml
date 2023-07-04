@@ -1,0 +1,25 @@
+name: staging
+
+on:
+  workflow_dispatch:
+
+jobs:
+  packaging:
+    uses: ./.github/workflows/packaging.yml
+    secrets: inherit
+
+  deploy:
+    if: (!startsWith(github.ref, 'refs/tags'))
+    runs-on: ubuntu-20.04
+    name: OTP ${{matrix.otp}} / Elixir ${{matrix.elixir}}
+    strategy:
+      matrix:
+        otp: ['21.3', '22.2']
+        elixir: ['1.8.2', '1.9.4']
+    needs: packaging
+    environment: staging
+    steps:
+      - uses: actions/checkout@v3
+      - name: Deploy Helm chart ${{ env.VERSION }} / Docker image ${{ env.DOCKER_TAG }}
+        run: |
+          echo "Perform the steps to deploy"

@@ -1,0 +1,41 @@
+name: quality
+
+on:
+  pull_request:
+  workflow_call:
+
+jobs:
+
+  build:
+    uses: ./.github/workflows/build.yml
+    secrets: inherit
+
+  integration-tests:
+    if: (!startsWith(github.ref, 'refs/tags'))
+    runs-on: ubuntu-20.04
+    name: OTP ${{matrix.otp}} / Elixir ${{matrix.elixir}}
+    strategy:
+      matrix:
+        otp: ['21.3', '22.2']
+        elixir: ['1.8.2', '1.9.4']
+    needs:
+      - build
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        with:
+          path: |
+            test_cache
+          key: gha-sandbox-cache
+      - name: Perform Testing
+        run: |
+          echo "Running tests" 
+          touch test_results.json
+          echo "test results" > test_results.json
+      - uses: actions/upload-artifact@v3
+        with:
+          name: test_results
+          retention-days: 1
+          path: |
+            test_results.json
+

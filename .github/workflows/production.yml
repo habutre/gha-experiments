@@ -1,0 +1,49 @@
+name: production
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+
+  quality:
+    uses: ./.github/workflows/quality.yml
+    secrets: inherit
+
+  packaging:
+    needs: quality
+    uses: ./.github/workflows/packaging.yml
+    secrets: inherit
+
+  release:
+    if: (github.ref_name == 'master') && (!startsWith(github.ref, 'refs/tags'))
+    needs: packaging
+    runs-on: ubuntu-20.04
+    name: OTP ${{matrix.otp}} / Elixir ${{matrix.elixir}}
+    strategy:
+      matrix:
+        otp: ['21.3', '22.2']
+        elixir: ['1.8.2', '1.9.4']
+    environment: production
+    steps:
+      - name: create tag and release
+        run: |
+          echo "Under construction"
+
+  deploy:
+    if: (github.ref_name == 'master') && (!startsWith(github.ref, 'refs/tags'))
+    needs: release
+    runs-on: ubuntu-20.04
+    name: OTP ${{matrix.otp}} / Elixir ${{matrix.elixir}}
+    strategy:
+      matrix:
+        otp: ['21.3', '22.2']
+        elixir: ['1.8.2', '1.9.4']
+    environment: production
+    steps:
+      - name: deploy to k8s
+        run: |
+          echo "Under construction"
+
+
