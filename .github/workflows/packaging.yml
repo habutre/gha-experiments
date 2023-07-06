@@ -28,6 +28,9 @@ jobs:
       - name: build-n-publish docker image
         run: |
           echo "Imagine a magic code building images here"
+          echo "Artifacts downloaded"
+          ls -l build
+          echo "========================================="
 
   build-docker-staging:
     if: (!startsWith(github.ref, 'refs/tags'))
@@ -43,6 +46,9 @@ jobs:
       - name: build-n-publish docker image
         run: |
           echo "Imagine a magic code building images here"
+          echo "Artifacts downloaded"
+          ls -l build
+          echo "========================================="
 
   publish-chart:
     if: (github.ref_name == 'master' && !startsWith(github.ref, 'refs/tags'))
@@ -60,6 +66,9 @@ jobs:
       - name: Publish Helm chart gha-sandbox ${{ env.VERSION }}
         run: |
           echo "Imagine a magic code building helm charts here"
+          echo "Artifacts downloaded"
+          ls -l build
+          echo "========================================="
 
   publish-chart-staging:
     if: (!startsWith(github.ref, 'refs/tags'))
@@ -77,4 +86,7 @@ jobs:
       - name: Publish Helm chart gha-sandbox ${{ env.VERSION }}
         run: |
           echo "Imagine a magic code building helm charts here"
+          echo "Artifacts downloaded"
+          ls -l build
+          echo "========================================="
 

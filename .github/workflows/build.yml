@@ -19,7 +19,7 @@ jobs:
       - uses: actions/cache@v3
         with:
           path: |
-              build_cache
+              build
           key: gha-sandbox-cache
       - uses: erlef/setup-beam@v1
         with:
@@ -27,8 +27,22 @@ jobs:
           elixir-version: ${{matrix.elixir}}
       - run: |
           echo "Running build (format, analyse, credo)"
+          mkdir -p build
+          echo "bin folder created"
+          touch build/config.json
+          touch build/welcome.ex
+          touch build/app.config
           #mix deps.get
           #mix test
+      - uses: actions/upload-artifact@v3
+        with:
+          name: build
+          retention-days: 1
+          path: |
+            build/config.json
+            build/welcome.ex
+            build/app.config
+
   test:
     runs-on: ubuntu-20.04
     name: OTP ${{matrix.otp}} / Elixir ${{matrix.elixir}}
@@ -43,6 +57,9 @@ jobs:
           otp-version: ${{matrix.otp}}
           elixir-version: ${{matrix.elixir}}
       - run: |
-          echo "Running tests"
+          echo "Running tests over files below:"
+          ls -l build
+          echo "==============================="
           #mix deps.get
           #mix test
+
