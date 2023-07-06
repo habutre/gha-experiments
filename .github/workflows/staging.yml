@@ -3,6 +3,10 @@ name: staging
 on:
   workflow_dispatch:
 
+env:
+  VESION: v0.0.${{ github.run_id }}
+  DOCKER_TAG: ${{ github.ref_name }}-${{ github.run_id }}
+
 jobs:
   build:
     uses: ./.github/workflows/build.yml
@@ -15,16 +19,16 @@ jobs:
 
   deploy:
     if: (!startsWith(github.ref, 'refs/tags'))
-    runs-on: ubuntu-20.04
     name: OTP ${{matrix.otp}} / Elixir ${{matrix.elixir}}
+    needs: packaging
+    runs-on: ubuntu-20.04
     strategy:
       matrix:
         otp: ['21.3', '22.2']
         elixir: ['1.8.2', '1.9.4']
-    needs: packaging
     environment: staging
     steps:
-      - uses: actions/checkout@v3
       - name: Deploy Helm chart ${{ env.VERSION }} / Docker image ${{ env.DOCKER_TAG }}
         run: |
           echo "Perform the steps to deploy"
+          echo "Deploy artifacts in Artifactory"
