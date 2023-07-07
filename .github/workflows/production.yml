@@ -3,7 +3,7 @@ name: production
 on:
   push:
     branches:
-      - master
+      # - master
 
 env:
   VESION: v0.0.${{ github.run_id }}
@@ -31,10 +31,15 @@ jobs:
         elixir: ['1.8.2', '1.9.4']
     environment: production
     steps:
+      - uses: actions/checkout@v3
       - name: create tag and release
         run: |
           echo "Creates tag xxx"
           echo "Creates release xxx with content vvv"
+          ls -lah ${{ github.workspace }}
+          git -v
+          git status
+
 
   deploy:
     if: (github.ref_name == 'master') && (!startsWith(github.ref, 'refs/tags'))
