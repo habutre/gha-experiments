@@ -2,6 +2,10 @@ name: packaging
 
 on: workflow_call
 
+env:
+  VESION: v0.0.${{ github.run_id }}
+  DOCKER_TAG: ${{ github.ref_name }}-${{ github.run_id }}
+
 jobs:
   prepare-artifacts:
     runs-on: ubuntu-20.04
@@ -25,11 +29,12 @@ jobs:
         elixir: ['1.8.2', '1.9.4']
     environment: production
     steps:
-      - name: build-n-publish docker image
+      - name: build-n-publish docker image ${{ env.DOCKER_TAG }}
         run: |
           echo "Imagine a magic code building images here"
           echo "Artifacts downloaded"
-          ls -l build
+          pwd
+          ls -lR ${{ github.workspace }}
           echo "========================================="
 
   build-docker-staging:
@@ -43,11 +48,12 @@ jobs:
         elixir: ['1.8.2', '1.9.4']
     environment: staging
     steps:
-      - name: build-n-publish docker image
+      - name: build-n-publish docker image ${{ env.DOCKER_TAG }}
         run: |
           echo "Imagine a magic code building images here"
           echo "Artifacts downloaded"
-          ls -l build
+          pwd
+          ls -lR ${{ github.workspace }}
           echo "========================================="
 
   publish-chart:
@@ -67,7 +73,8 @@ jobs:
         run: |
           echo "Imagine a magic code building helm charts here"
           echo "Artifacts downloaded"
-          ls -l build
+          pwd
+          ls -lR ${{ github.workspace }}
           echo "========================================="
 
   publish-chart-staging:
@@ -87,6 +94,7 @@ jobs:
         run: |
           echo "Imagine a magic code building helm charts here"
           echo "Artifacts downloaded"
-          ls -l build
+          pwd
+          ls -lR ${{ github.workspace }}
           echo "========================================="
 
