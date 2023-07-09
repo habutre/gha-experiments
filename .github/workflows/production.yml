@@ -6,7 +6,7 @@ on:
       - master
 
 env:
-  VESION: v0.0.${{ github.run_id }}
+  VERSION: v0.0.${{ github.run_id }}
   DOCKER_TAG: ${{ github.ref_name }}-${{ github.run_id }}
 
 jobs:
@@ -39,8 +39,13 @@ jobs:
           ls -lah ${{ github.workspace }}
           git -v
           git remote -v
+          echo "Current tags"
+          git tag -l
+          echo "Creating tag $VERSION"
           git tag $VERSION
+          echo "Pushing created tag"
           git push --tags
+          echo "Was the tag created? Listing below"
           git tag -l
 
 
