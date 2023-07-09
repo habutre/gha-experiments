@@ -3,7 +3,7 @@ name: production
 on:
   push:
     branches:
-      # - master
+      - master
 
 env:
   VESION: v0.0.${{ github.run_id }}
@@ -38,7 +38,8 @@ jobs:
           echo "Creates release xxx with content vvv"
           ls -lah ${{ github.workspace }}
           git -v
-          git status
+          git tag $VERSION
+          git push --tags
 
 
   deploy:
