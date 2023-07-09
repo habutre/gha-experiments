@@ -33,6 +33,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: create tag and release
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
           echo "Creates tag xxx"
           echo "Creates release xxx with content vvv"
