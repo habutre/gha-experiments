@@ -19,4 +19,4 @@ During code review is important to give a bit of more insights to the reviwers t
 * code quality ensuring (name your own tool)
 * wider test strategy like integration and component tests
 
-Now the release can be generated from actions
+Now the release can be generated from actions.
