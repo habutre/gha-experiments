@@ -22,6 +22,7 @@ jobs:
         run: |
           BRANCH_NAME=github.event.ref
           echo "API_SOURCE_NAME=${BRANCH_NAME}" >> "$GITHUB_ENV"
+          echo "Branch ${BRANCH_NAME} deleted"
     outputs:
       branch-name: ${{ env.API_SOURCE_NAME }}
 
@@ -35,6 +36,7 @@ jobs:
         run: |
           PR_TITLE=github.event.pull_request.title
           echo "API_SOURCE_NAME=${PR_TITLE}" >> "$GITHUB_ENV"
+          echo "PR closed ${PR_TITLE} closed"
     outputs:
       pr-title: ${{ env.API_SOURCE_NAME }}
 
@@ -70,6 +72,7 @@ jobs:
           fi
 
           echo "API_HELM_RELEASE_NAME=${NAME}" >> "$GITHUB_ENV"
+          echo "Helm Release ${NAME} generated"
     outputs:
       name:  ${{ env.API_HELM_RELEASE_NAME }}
 
