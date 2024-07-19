@@ -74,7 +74,7 @@ jobs:
           echo "API_HELM_RELEASE_NAME=${NAME}" >> "$GITHUB_ENV"
           echo "Helm Release ${NAME} generated"
     outputs:
-      name:  ${{ env.API_HELM_RELEASE_NAME }}
+      helm-release-name: ${{ env.API_HELM_RELEASE_NAME }}
 
   clean-up:
     if: (!startsWith(github.ref, 'refs/tags'))
@@ -84,7 +84,7 @@ jobs:
       - helm-release
     #environment: staging
     env:
-      RELEASE_NAME: ${{ needs.helm-release.outputs.name }}
+      RELEASE_NAME: ${{ needs.helm-release.outputs.helm-release-name }}
     steps:
       - name: Uninstall feature environment ${{ env.RELEASE_NAME }}
         run: |
