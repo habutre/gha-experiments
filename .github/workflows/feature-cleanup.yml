@@ -77,7 +77,7 @@ jobs:
       helm-release-name: ${{ env.API_HELM_RELEASE_NAME }}
 
   clean-up:
-    if: (!startsWith(github.ref, 'refs/tags'))
+    if: ${{ always() }}
     runs-on:
       - ubuntu-20.04
     needs:
