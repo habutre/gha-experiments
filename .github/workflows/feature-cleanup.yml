@@ -20,7 +20,7 @@ jobs:
     steps:
       - name: Extract release from branch name
         run: |
-          BRANCH_NAME=${{ github.event.ref }}
+          BRANCH_NAME="${{ github.event.ref }}"
           echo "API_SOURCE_NAME=${BRANCH_NAME}" >> "$GITHUB_ENV"
           echo "Branch ${BRANCH_NAME} deleted"
     outputs:
@@ -34,7 +34,7 @@ jobs:
     steps:
       - name: Extract release from pull request title
         run: |
-          PR_TITLE=${{ github.event.pull_request.title }}
+          PR_TITLE="${{ github.event.pull_request.title }}"
           echo "API_SOURCE_NAME=${PR_TITLE}" >> "$GITHUB_ENV"
           echo "PR closed ${PR_TITLE} closed"
     outputs:
