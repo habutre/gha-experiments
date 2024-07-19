@@ -57,13 +57,11 @@ jobs:
           NAME=
 
           if [[ -n "${NAME_FROM_BRANCH}" ]]; then
-            JIRA_TICKET=$(echo ${NAME_FROM_BRANCH} | grep -oE "([a-zA-Z]{2,5}-[0-9]+)" | tr '[A-Z]' '[a-z]')
-            NAME=${JIRA_TICKET}-app-api
+            NAME=$(echo ${NAME_FROM_BRANCH} | grep -oE "([a-zA-Z]{2,5}-[0-9]+)" | tr '[A-Z]' '[a-z]')
           fi
 
           if [[ -n "${NAME_FROM_PR_TITLE}" ]]; then
-            JIRA_TICKET=$(echo ${NAME_FROM_PR_TITLE} | grep -oE "([a-zA-Z]{2,5}-[0-9]+)" | tr '[A-Z]' '[a-z]')
-            NAME=${JIRA_TICKET}-app-api
+            NAME=$(echo ${NAME_FROM_PR_TITLE} | grep -oE "([a-zA-Z]{2,5}-[0-9]+)" | tr '[A-Z]' '[a-z]')
           fi
 
           if [[ -z "${NAME}" ]]; then
@@ -71,8 +69,8 @@ jobs:
             exit 1
           fi
 
-          echo "API_HELM_RELEASE_NAME=${NAME}" >> "$GITHUB_ENV"
-          echo "Helm Release ${NAME} generated"
+          echo "API_HELM_RELEASE_NAME=${NAME}-app-api" >> "$GITHUB_ENV"
+          echo "Helm Release ${NAME}-app-api generated"
     outputs:
       helm-release-name: ${{ env.API_HELM_RELEASE_NAME }}
 
