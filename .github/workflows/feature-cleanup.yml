@@ -15,7 +15,7 @@ jobs:
   triggered-by-branch-deletion:
     if: (!startsWith(github.ref, 'refs/tags') && github.event.ref_type == 'branch')
     runs-on:
-      - self-hosted
+      - ubuntu-20.04
     #environment: staging
     steps:
       - name: Extract release from branch name
@@ -28,7 +28,7 @@ jobs:
   triggered-by-pull-request:
     if: (!startsWith(github.ref, 'refs/tags') && github.event_name == 'pull_request')
     runs-on:
-      - self-hosted
+      - ubuntu-20.04
     #environment: staging
     steps:
       - name: Extract release from pull request title
@@ -41,7 +41,7 @@ jobs:
   release-name:
     if: (!startsWith(github.ref, 'refs/tags'))
     runs-on:
-      - self-hosted
+      - ubuntu-20.04
     needs:
       - triggered-by-pull-request
       - triggered-by-branch-deletion
@@ -76,7 +76,7 @@ jobs:
   clean-up:
     if: (!startsWith(github.ref, 'refs/tags'))
     runs-on:
-      - self-hosted
+      - ubuntu-20.04
     needs:
       - release-name
     #environment: staging
