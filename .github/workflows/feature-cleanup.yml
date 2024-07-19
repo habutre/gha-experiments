@@ -1,0 +1,88 @@
+name: staging-feature
+
+on:
+  # on PR closed or merged
+  pull_request:
+    types:
+      - closed
+  # on branch deleted
+  delete:
+
+
+jobs:
+
+# TODO: remove when tested
+  triggered-by-branch-deletion:
+    if: (!startsWith(github.ref, 'refs/tags') && github.event.ref_type == 'branch')
+    runs-on:
+      - self-hosted
+    #environment: staging
+    steps:
+      - name: Extract release from branch name
+        run: |
+          BRANCH_NAME=github.event.ref
+          echo "PAYROLL_API_SOURCE_NAME=${BRANCH_NAME}" >> "$GITHUB_ENV"
+    outputs:
+      branch-name: ${{ env.PAYROLL_API_SOURCE_NAME }}
+
+  triggered-by-pull-request:
+    if: (!startsWith(github.ref, 'refs/tags') && github.event_name == 'pull_request')
+    runs-on:
+      - self-hosted
+    #environment: staging
+    steps:
+      - name: Extract release from pull request title
+        run: |
+          PR_TITLE=github.event.pull_request.title
+          echo "PAYROLL_API_SOURCE_NAME=${PR_TITLE}" >> "$GITHUB_ENV"
+    outputs:
+      pr-title: ${{ env.PAYROLL_API_SOURCE_NAME }}
+
+  release-name:
+    if: (!startsWith(github.ref, 'refs/tags'))
+    runs-on:
+      - self-hosted
+    needs:
+      - triggered-by-pull-request
+      - triggered-by-branch-deletion
+    #environment: staging
+    steps:
+      - name: Generate Helm release name
+        if: (!startsWith(github.ref, 'refs/tags'))
+        run: |
+          NAME_FROM_BRANCH=${{ needs.triggered-by-branch-deletion.outputs.branch-name }}
+          NAME_FROM_PR_TITLE=${{ needs.triggered-by-pull-request.outputs.pr-title }}
+          NAME=
+
+          if [[ -z "${NAME_FROM_BRANCH}" ]]; then
+            JIRA_TICKET=$(echo ${NAME_FROM_BRANCH} | grep -oE "([a-zA-Z]{2,5}-[0-9]+)" | tr '[A-Z]' '[a-z]')
+            NAME=${JIRA_TICKET}-payroll-api
+          if
+
+          if [[ -z "${NAME_FROM_PR_TITLE}"]]; then
+            JIRA_TICKET=$(echo ${NAME_FROM_PR_TITLE} | grep -oE "([a-zA-Z]{2,5}-[0-9]+)" | tr '[A-Z]' '[a-z]')
+            NAME=${JIRA_TICKET}-payroll-api
+          fi
+
+          if [[ -z "${NAME}" ]]; then
+            echo "Release Name is empty or does not match with expected pattern: ([a-zA-Z]{2,5}-[0-9]+) e.g. JIRA-0001<<branch / pr title>>"
+            exit 1
+          fi
+
+          echo "PAYROLL_API_HELM_RELEASE_NAME=${NAME}" >> "$GITHUB_ENV"
+    outputs:
+      name:  ${{ env.PAYROLL_API_HELM_RELEASE_NAME }}
+
+  clean-up:
+    if: (!startsWith(github.ref, 'refs/tags'))
+    runs-on:
+      - self-hosted
+    needs:
+      - release-name
+    #environment: staging
+    env:
+      RELEASE_NAME: ${{ needs.release-name.outputs.name }}
+    steps:
+      - name: Uninstall feature environment ${{ env.RELEASE_NAME }}
+        run: |
+          echo "From here IF and only IF the release ${{ env.RELEASE_NAME }} exists the resources will be removed"
