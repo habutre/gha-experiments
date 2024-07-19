@@ -40,7 +40,7 @@ jobs:
     outputs:
       pr-title: ${{ env.API_SOURCE_NAME }}
 
-  release-name:
+  helm-release:
     if: ${{ always() }}
     runs-on:
       - ubuntu-20.04
@@ -81,10 +81,10 @@ jobs:
     runs-on:
       - ubuntu-20.04
     needs:
-      - release-name
+      - helm-release
     #environment: staging
     env:
-      RELEASE_NAME: ${{ needs.release-name.outputs.name }}
+      RELEASE_NAME: ${{ needs.helm-release.outputs.name }}
     steps:
       - name: Uninstall feature environment ${{ env.RELEASE_NAME }}
         run: |
