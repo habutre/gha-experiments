@@ -21,9 +21,9 @@ jobs:
       - name: Extract release from branch name
         run: |
           BRANCH_NAME=github.event.ref
-          echo "PAYROLL_API_SOURCE_NAME=${BRANCH_NAME}" >> "$GITHUB_ENV"
+          echo "API_SOURCE_NAME=${BRANCH_NAME}" >> "$GITHUB_ENV"
     outputs:
-      branch-name: ${{ env.PAYROLL_API_SOURCE_NAME }}
+      branch-name: ${{ env.API_SOURCE_NAME }}
 
   triggered-by-pull-request:
     if: (!startsWith(github.ref, 'refs/tags') && github.event_name == 'pull_request')
@@ -34,9 +34,9 @@ jobs:
       - name: Extract release from pull request title
         run: |
           PR_TITLE=github.event.pull_request.title
-          echo "PAYROLL_API_SOURCE_NAME=${PR_TITLE}" >> "$GITHUB_ENV"
+          echo "API_SOURCE_NAME=${PR_TITLE}" >> "$GITHUB_ENV"
     outputs:
-      pr-title: ${{ env.PAYROLL_API_SOURCE_NAME }}
+      pr-title: ${{ env.API_SOURCE_NAME }}
 
   release-name:
     if: (!startsWith(github.ref, 'refs/tags'))
@@ -56,12 +56,12 @@ jobs:
 
           if [[ -z "${NAME_FROM_BRANCH}" ]]; then
             JIRA_TICKET=$(echo ${NAME_FROM_BRANCH} | grep -oE "([a-zA-Z]{2,5}-[0-9]+)" | tr '[A-Z]' '[a-z]')
-            NAME=${JIRA_TICKET}-payroll-api
+            NAME=${JIRA_TICKET}-app-api
           if
 
           if [[ -z "${NAME_FROM_PR_TITLE}"]]; then
             JIRA_TICKET=$(echo ${NAME_FROM_PR_TITLE} | grep -oE "([a-zA-Z]{2,5}-[0-9]+)" | tr '[A-Z]' '[a-z]')
-            NAME=${JIRA_TICKET}-payroll-api
+            NAME=${JIRA_TICKET}-app-api
           fi
 
           if [[ -z "${NAME}" ]]; then
@@ -69,9 +69,9 @@ jobs:
             exit 1
           fi
 
-          echo "PAYROLL_API_HELM_RELEASE_NAME=${NAME}" >> "$GITHUB_ENV"
+          echo "API_HELM_RELEASE_NAME=${NAME}" >> "$GITHUB_ENV"
     outputs:
-      name:  ${{ env.PAYROLL_API_HELM_RELEASE_NAME }}
+      name:  ${{ env.API_HELM_RELEASE_NAME }}
 
   clean-up:
     if: (!startsWith(github.ref, 'refs/tags'))
