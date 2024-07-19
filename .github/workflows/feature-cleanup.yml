@@ -36,7 +36,7 @@ jobs:
         run: |
           PR_TITLE="${{ github.event.pull_request.title }}"
           echo "API_SOURCE_NAME=${PR_TITLE}" >> "$GITHUB_ENV"
-          echo "PR closed ${PR_TITLE} closed"
+          echo "PR ${PR_TITLE} closed"
     outputs:
       pr-title: ${{ env.API_SOURCE_NAME }}
 
@@ -52,8 +52,8 @@ jobs:
       - name: Generate Helm release name
         if: (!startsWith(github.ref, 'refs/tags'))
         run: |
-          NAME_FROM_BRANCH=${{ needs.triggered-by-branch-deletion.outputs.branch-name }}
-          NAME_FROM_PR_TITLE=${{ needs.triggered-by-pull-request.outputs.pr-title }}
+          NAME_FROM_BRANCH="${{ needs.triggered-by-branch-deletion.outputs.branch-name }}"
+          NAME_FROM_PR_TITLE="${{ needs.triggered-by-pull-request.outputs.pr-title }}"
           NAME=
 
           if [[ -n "${NAME_FROM_BRANCH}" ]]; then
