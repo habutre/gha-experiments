@@ -56,12 +56,12 @@ jobs:
           NAME_FROM_PR_TITLE=${{ needs.triggered-by-pull-request.outputs.pr-title }}
           NAME=
 
-          if [[ -z "${NAME_FROM_BRANCH}" ]]; then
+          if [[ -n "${NAME_FROM_BRANCH}" ]]; then
             JIRA_TICKET=$(echo ${NAME_FROM_BRANCH} | grep -oE "([a-zA-Z]{2,5}-[0-9]+)" | tr '[A-Z]' '[a-z]')
             NAME=${JIRA_TICKET}-app-api
           if
 
-          if [[ -z "${NAME_FROM_PR_TITLE}"]]; then
+          if [[ -n "${NAME_FROM_PR_TITLE}" ]]; then
             JIRA_TICKET=$(echo ${NAME_FROM_PR_TITLE} | grep -oE "([a-zA-Z]{2,5}-[0-9]+)" | tr '[A-Z]' '[a-z]')
             NAME=${JIRA_TICKET}-app-api
           fi
